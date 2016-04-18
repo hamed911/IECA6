@@ -1,0 +1,50 @@
+[
+	{
+		"ingredient" : {"name" : "chicken"},
+		"amount" : 1200,
+		"price" : 1000,
+		"date" : "23-9-2015"
+	},
+	{
+		"ingredient" : {"name" : "chicken"},
+		"amount" : 1200,
+		"price" : 1000,
+		"date" : "23-9-2015"
+	},
+	{
+		"ingredient" : {"name" : "rice"},
+		"amount" : 1500,
+		"price" : 650,
+		"date" : "23-9-2015"
+	},
+	{
+		"ingredient" : {"name" : "soy-sauce"},
+		"amount" : 200,
+		"price" : 73,
+		"date" : "01-11-2015"
+	},
+	{
+		"ingredient" : {"name" : "ginger"},
+		"amount" : 300,
+		"price" : 43,
+		"date" : "01-11-2015"
+	},
+	{
+		"ingredient" : {"name" : "black-pepper"},
+		"amount" : 120,
+		"price" : 8,
+		"date" : "01-11-2015"
+	},
+	{
+		"ingredient" : {"name" : "paprika"},
+		"amount" : 20,
+		"price" : 54,
+		"date" : "01-11-2015"
+	},
+	{
+		"ingredient" : {"name" : "rice"},
+		"amount" : 250,
+		"price" : 665,
+		"date" : "01-11-2015"
+	}
+]
