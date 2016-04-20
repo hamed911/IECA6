@@ -8,6 +8,7 @@ var usersList = repositoryLoader.loadUsers();
 var warehouse = repositoryLoader.loadWarehouse();
 
 var session = null;
+var authenticationStatus = Object.freeze({ W_USER:-1, W_PASS: 0, LOGIN: 1, BLOCK: 2 });
 
 var stdin = process.openStdin();
 
@@ -25,6 +26,19 @@ function inputHandle(command) {
     else if (str.length == 1 && order == "logout") {
         logout();
     }
+    else if (order == "shipment") {
+        if (session == "admin") {
+            if (str.length < 2) {
+                console.log('Empty shipment is not valid.');
+                return;
+            }
+            command = command.split("shipment ").pop();
+            console.log(command);
+            console.log(command.split(/[..]/));
+        }
+        else
+            console.log('This command is valid just for admin!');
+    }
     else
         console.log('Invalid command!');
 }
@@ -39,15 +53,15 @@ function login(str) {
 
     result = authenticate(str[1], str[2]);
 
-    if (result == 1) {
+    if (result == authenticationStatus.LOGIN) {
         console.log('Wellcome ' + str[1] + '!');
         session = str[1];
     }
-    else if (result == -1) {
+    else if (result == authenticationStatus.W_USER) {
         console.log('Account with this username does not exist!');
         return;
     }
-    else if (result == 0) {
+    else if (result == authenticationStatus.W_PASS) {
         var user = getUser(str[1]);
         user.countOfWrongLogin += 1;
        
@@ -61,8 +75,10 @@ function login(str) {
         else
             console.log('Invalide password, please try again...');
     }
-    else {
-        console.log('Your account is blocked!');
+    else if (result == authenticationStatus.BLOCK) {
+        var d = new Date();
+        var time = (120000 - (parseInt(d.getTime()) - parseInt(getUser(str[1]).activeTime)) ) / 1000;
+        console.log('Your account is blocked for '+ time +' seconds later!');
     }
 }
 
