@@ -1,0 +1,12 @@
+login
+login parisa 123
+login admin 98
+login admin wd
+login admin 9d
+login admin password
+login hassan sc
+login hassan 12345
+logout
+login hassan sc
+login hassan 12345
+logout
