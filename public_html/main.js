@@ -7,6 +7,7 @@ var repositoryLoader = new RepositoryLoader();
 var usersList = repositoryLoader.loadUsers();
 var warehouse = repositoryLoader.loadWarehouse();
 var recipes = repositoryLoader.loadRecipes();
+
 var session = null;
 var authenticationStatus = Object.freeze({ W_USER:-1, W_PASS: 0, LOGIN: 1, BLOCK: 2 });
 
@@ -32,9 +33,10 @@ function inputHandle(command) {
                 console.log('Empty shipment is not valid.');
                 return;
             }
+            console.log(command);
             command = command.split("shipment ").pop();
             console.log(command);
-            console.log(command.split(/[..]/));
+            console.log(command.split(/ |\,|\"|\[|\]/));
         }
         else
             console.log('This command is valid just for admin!');
@@ -83,8 +85,12 @@ function login(str) {
 }
 
 function logout() {
-    console.log('Goodbye ' + session + '!');
-    session = null;
+    if (session != null) {
+        console.log('Goodbye ' + session + '!');
+        session = null;
+    }
+    else
+        console.log('First login!');
 }
 
 function authenticate(user, pass) {
