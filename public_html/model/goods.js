@@ -10,6 +10,6 @@ var Goods = function (name,amount,price){
  */
 Goods.prototype.validate = function (){
     return this.name && this.amount && this.price;
-}
+};
 
 module.exports = Goods;

@@ -6,7 +6,7 @@ var repositoryLoader = new RepositoryLoader();
 
 var usersList = repositoryLoader.loadUsers();
 var warehouse = repositoryLoader.loadWarehouse();
-
+var recipes = repositoryLoader.loadRecipes();
 var session = null;
 
 var stdin = process.openStdin();
