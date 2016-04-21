@@ -1,6 +1,8 @@
 "use strict"
 var Warehouse = require('./model/warehouse.js');
 var User = require('./model/user.js');
+var Goods = require('./model/goods.js');
+var Consignment = require('./model/consignment.js');
 var RepositoryLoader = require("./model/repositoryLoader.js");
 var repositoryLoader = new RepositoryLoader();
 
@@ -28,18 +30,7 @@ function inputHandle(command) {
         logout();
     }
     else if (order == "shipment") {
-        if (session == "admin") {
-            if (str.length < 2) {
-                console.log('Empty shipment is not valid.');
-                return;
-            }
-            console.log(command);
-            command = command.split("shipment ").pop();
-            console.log(command);
-            console.log(command.split(/ |\,|\"|\[|\]/));
-        }
-        else
-            console.log('This command is valid just for admin!');
+        shipment(str,command);
     }
     else
         console.log('Invalid command!');
@@ -104,16 +95,16 @@ function authenticate(user, pass) {
                 if (usersList[i].activeTime == null || parseInt(usersList[i].activeTime) + 120000 <= parseInt(new Date().getTime())) {
                     usersList[i].countOfWrongLogin = 0;
                     usersList[i].activeTime = null;
-                    return 1;
+                    return authenticationStatus.LOGIN;
                 }
                 else
-                    return 2;
+                    return authenticationStatus.BLOCK;
             }
         }
     }
     if (usr)
-        return 0;
-    return -1;
+        return authenticationStatus.W_PASS;
+    return authenticationStatus.W_USER;
 }
 
 function getUser(name) {
@@ -123,4 +114,52 @@ function getUser(name) {
         }
     }
     return null;
+}
+
+function shipment(str, command) {
+    if (session == "admin") {
+        if (str.length < 2) {
+            console.log('Empty shipment is not valid.');
+            return;
+        }
+
+        command = command.split("shipment ").pop();
+        str = command.split(/\[|\]| |\,|\"/).filter(Boolean);
+        
+        if (str.length % 3 != 0) {
+            console.log('Invalid arguments!');
+            return;
+        }
+        var shipment;
+        for (var i = 0; i < str.length; i = i + 3) {
+            if (i == 0) {
+                var list = [];
+                list.push(new Goods(str[i], str[i + 1], str[i + 2]));
+                var date = new Date();
+                var myDate = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+                
+                shipment = new Consignment(myDate, list);
+            }
+            else {
+                if (!shipment.isExist(str[i]))
+                    shipment.addIntoGoods(str[i], str[i + 1], str[i + 2]);
+                else {
+                    console.log(str[i] + ': already exists!\nShipment was not accepted.');
+                    return;
+                }
+            }
+        }
+        
+        warehouse.addNewConsignment(shipment);
+        var value = warehouse.calculateValue();
+        repositoryLoader.writeWarehouse(warehouse);
+        console.log('present warehouse value: ' + numberWithCommas(value));
+        
+    }
+    else
+        console.log('This command is valid just for admin!');
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

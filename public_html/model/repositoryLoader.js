@@ -78,7 +78,7 @@ RepositoryLoader.prototype.loadRecipes = function (){
     try{
         var plainRecepies = JSON.parse(fs.readFileSync('./recipes.json', 'utf8'));
     }catch (ex){
-        console.log("Error in reading \'warehouse.json\'");
+        console.log("Error in reading \'recipes.json\'");
         return null;
     }
     for(var i=0; i<plainRecepies.length; i++){
@@ -109,5 +109,11 @@ RepositoryLoader.prototype.loadRecipes = function (){
     return recepies;
 };
 
+RepositoryLoader.prototype.writeWarehouse = function (data) {
+    var file = './warehouse.json'
+    fs.writeFile(file, data, function (err) {
+        console.error(err)
+    })
+}
 
 module.exports=RepositoryLoader;
