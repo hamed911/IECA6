@@ -123,10 +123,15 @@ function getUser(name) {
 
 function showIngredient(){
     var ingredients= warehouse.getGoodsStatus();
+    var tabnum=0;
+    for(var name in ingredients)
+        if(name.length/7>tabnum)
+            tabnum = name.length/7;
+    tabnum = Math.ceil(tabnum);
     var i=1;
     for( var goods in ingredients){
         if(ingredients.hasOwnProperty(goods)){
-            console.log(myUtils.zeroPadding(i,2)+"\t"+goods+myUtils.spaceAlignment(goods,2)+ingredients[goods][0]+"\t"+myUtils.numberWithCommas(ingredients[goods][1]))
+            console.log(myUtils.zeroPadding(i,2)+"\t"+goods+myUtils.spaceAlignment(goods,tabnum)+ingredients[goods][0]+"\t"+myUtils.numberWithCommas(ingredients[goods][1]))
             i++;
         }
     }
