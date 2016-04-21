@@ -37,6 +37,9 @@ function inputHandle(command) {
     else if (str.length ===2 && order === "show" && str[1]==="recipes"){
         showRecipes();
     }
+    else if (str.length >=3 && order === "estimate"){
+        estimateMeal(str[1],command.toString().substr(10+str[1].length));
+    }
     else if (order == "shipment") {
         shipment(str,command);
     }
@@ -124,13 +127,17 @@ function getUser(name) {
     return null;
 }
 
-function showIngredient(){
-    var ingredients= warehouse.getGoodsStatus();
+function determineTabNumber(ingredients){
     var tabnum=0;
     for(var name in ingredients)
         if(myUtils.numberOfTabsForTableAlignment(name)>tabnum)
             tabnum = myUtils.numberOfTabsForTableAlignment(name);
-    console.log(tabnum);
+    return tabnum;
+};
+
+function showIngredient(){
+    var ingredients= warehouse.getGoodsStatus();
+    var tabnum=determineTabNumber(ingredients);
     var i=1;
     for( var goods in ingredients){
         if(ingredients.hasOwnProperty(goods)){
@@ -162,6 +169,40 @@ function showRecipes(){
             console.log("\t"+myUtils.numberWithCommas( total));
         
     }
+}
+
+function estimateMeal(amount,meal){
+   console.log("ingredient\trequired\tavailable\tpurchase price"); 
+   var knownMeal = false;
+   var total =0;
+    for(var i=0; i<recipes.length; i++){
+        if(recipes[i].name ===meal){
+            knownMeal=true;
+            var tabNumnber = determineTabNumber(recipes[i].ingredients);
+            if(tabNumnber< myUtils.numberOfTabsForTableAlignment("ingredient"))
+                tabNumnber = myUtils.numberOfTabsForTableAlignment("ingredient");
+            for( var j=0; j<recipes[i].ingredients.length; j++){
+                var goods = warehouse.getAvailableGoods(recipes[i].ingredients[j].name);
+                var available;
+                var purchasePrice;
+                if(!goods){
+                    available=undefined;
+                    purchasePrice=undefined;
+                }else{
+                    available=goods[1];
+                    purchasePrice= recipes[i].ingredients[j].amount*amount>available?
+                        (recipes[i].ingredients[j].amount*amount-available)*goods[0]:0;
+                    total+=purchasePrice;
+                    purchasePrice=myUtils.numberWithCommas(purchasePrice);
+                }
+                console.log(recipes[i].ingredients[j].name+myUtils.spaceAlignment(recipes[i].ingredients[j].name,tabNumnber)+
+                        recipes[i].ingredients[j].amount*amount+"\t\t"+available+"\t\t"+purchasePrice);
+            }
+        }
+    }
+    if(!knownMeal)
+        console.log("There is no recipe for the respective meal.");
+    console.log("\t\t\t\t\t\t"+myUtils.numberWithCommas(total));
 }
 
 function shipment(str, command) {

@@ -10,9 +10,13 @@ var Warehouse= function (){
 
 Warehouse.prototype.addNewConsignment = function (consignment){
     this.consignments.push(consignment);
-    /// {name:[recentPrice,totalPrice]
+    /// {name:[recentPrice,totalAmount]
     this.updateAvailableGoodsContent(consignment);
 };
+
+Warehouse.prototype.getAvailableGoods = function (goods){
+    return this.availableGoods[goods];
+}
 
 Warehouse.prototype.goodsEstimatedCost = function (goods,amount){
     var price =0;
