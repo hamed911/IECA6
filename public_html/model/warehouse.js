@@ -1,14 +1,18 @@
 "use strict"
 var Consignment = require('./consignment.js');
+var Utils = require('../domain/utils.js');
+var myUtils = new Utils();
 
 var Warehouse= function (){
     this.consignments=[];
     this.availableGoods={};
 };
+
 Warehouse.prototype.addNewConsignment = function (consignment){
-    this.consignment.push(consignment);
+    this.consignments.push(consignment);
     this.updateAvailableGoodsContent(consignment);
 };
+
 
 Warehouse.prototype.updateAvailableGoodsContent = function(consignment){
     for(var i=0; i<consignment.listOfGoods.length; i++){
@@ -22,7 +26,12 @@ Warehouse.prototype.updateAvailableGoodsContent = function(consignment){
     }
 };
 
-Warehouse.prototype.showIngredients = function (){
+/**
+ *  [lastPrice,available amount in warehousr] 
+ * @param {type} consignment
+ * @returns {undefined}
+ */
+Warehouse.prototype.getGoodsStatus = function (){
     var res={};
     for(var i =0; i<this.consignments.length; i++){
         for(var j=0; j< this.consignments[i].listOfGoods.length; j++){
@@ -36,10 +45,21 @@ Warehouse.prototype.showIngredients = function (){
             }
         }
     }
-    res.sort(function sorter(a,b){
-        a
-    });
-    console.log(res);
+    res= myUtils.sortObject(res);
+    return res;
 };
+
+Warehouse.prototype.calculateValue = function () {
+    var value = parseInt(0);
+    for (var i = 0; i < this.consignments.length; i++) {
+        for (var j = 0; j < this.consignments[i].listOfGoods.length; j++) {
+            var count = parseInt(this.consignments[i].listOfGoods[j].amount);
+            var price = parseInt(this.consignments[i].listOfGoods[j].price);
+            value += (count * price);
+        }
+    }
+    return value;
+    
+}
 
 module.exports = Warehouse;

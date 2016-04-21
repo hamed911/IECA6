@@ -5,7 +5,10 @@ var Goods = require('./goods.js');
 var Warehouse = require('./warehouse.js');
 var Consignment = require('./consignment.js');
 var Recipe = require('./recipe.js');
-var Ingredient = require('./ingredient.js')
+var Ingredient = require('./ingredient.js');
+var Utils = require('../domain/utils.js');
+var myUtils = new Utils();
+
 
 var RepositoryLoader= function(){
 };
@@ -46,6 +49,7 @@ RepositoryLoader.prototype.loadWarehouse = function (){
         console.log("Error in reading \'warehouse.json\'");
         return null;
     }
+    wrhousePlain= myUtils.sortObject(wrhousePlain);
     for (var key in wrhousePlain) {
         (function (){
             if (wrhousePlain.hasOwnProperty(key)) {
@@ -78,7 +82,7 @@ RepositoryLoader.prototype.loadRecipes = function (){
     try{
         var plainRecepies = JSON.parse(fs.readFileSync('./recipes.json', 'utf8'));
     }catch (ex){
-        console.log("Error in reading \'warehouse.json\'");
+        console.log("Error in reading \'recipes.json\'");
         return null;
     }
     for(var i=0; i<plainRecepies.length; i++){
@@ -109,5 +113,11 @@ RepositoryLoader.prototype.loadRecipes = function (){
     return recepies;
 };
 
+RepositoryLoader.prototype.writeWarehouse = function (data) {
+    var file = './warehouse.json'
+    fs.writeFile(file, data, function (err) {
+        console.error(err)
+    })
+}
 
 module.exports=RepositoryLoader;

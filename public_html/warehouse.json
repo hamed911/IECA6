@@ -1,5 +1,5 @@
 {
-  "23-9-2015": [
+  "23-9-2016": [
     {
         "ingredient" : {"name" : "chicken"},
         "amount" : 1200,
@@ -13,7 +13,7 @@
   ],
     "01-11-2015": [
     {
-        "ingredient" : {"name" : "soy-sauce"},
+        "ingredient" : {"name" : "soy-sauc"},
         "amount" : 200,
         "price" : 73
     },
