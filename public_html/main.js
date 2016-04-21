@@ -21,14 +21,17 @@ function inputHandle(command) {
     var str = command.split(" ");
     var order = str[0];
     
-    if (str.length == 3 && order == "login") {
+    if (str.length === 3 && order === "login") {
         login(str);
     }
-    else if (str.length == 1 && order == "logout") {
+    else if (str.length === 1 && order === "logout") {
         logout();
     }
-    else if (order == "shipment") {
-        if (session == "admin") {
+    else if (str.length ===2 && order === "show" && str[1]==="ingredients"){
+        showIngredient();
+    }
+    else if (order === "shipment") {
+        if (session === "admin") {
             if (str.length < 2) {
                 console.log('Empty shipment is not valid.');
                 return;
@@ -123,4 +126,8 @@ function getUser(name) {
         }
     }
     return null;
+}
+
+function showIngredient(){
+    warehouse.showIngredients();
 }
