@@ -35,12 +35,16 @@ Utils.prototype.spaceAlignment = function (str,tabnumber){
     if(str.length/7>1 && tabnumber>str.length/7){
         tabnumber-= str.length/7;
     }
-    var str="";
+    str="";
     while(tabnumber>0){
         str+="\t";
         tabnumber--;
     }
     return str;
+};
+
+Utils.prototype.numberOfTabsForTableAlignment = function (name){
+    return Math.ceil( name.length/7);
 }
 
 module.exports = Utils;

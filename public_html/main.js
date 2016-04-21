@@ -34,6 +34,9 @@ function inputHandle(command) {
     else if (str.length ===2 && order === "show" && str[1]==="ingredients"){
         showIngredient();
     }
+    else if (str.length ===2 && order === "show" && str[1]==="recipes"){
+        showRecipes();
+    }
     else if (order == "shipment") {
         shipment(str,command);
     }
@@ -125,15 +128,39 @@ function showIngredient(){
     var ingredients= warehouse.getGoodsStatus();
     var tabnum=0;
     for(var name in ingredients)
-        if(name.length/7>tabnum)
-            tabnum = name.length/7;
-    tabnum = Math.ceil(tabnum);
+        if(myUtils.numberOfTabsForTableAlignment(name)>tabnum)
+            tabnum = myUtils.numberOfTabsForTableAlignment(name);
+    console.log(tabnum);
     var i=1;
     for( var goods in ingredients){
         if(ingredients.hasOwnProperty(goods)){
             console.log(myUtils.zeroPadding(i,2)+"\t"+goods+myUtils.spaceAlignment(goods,tabnum)+ingredients[goods][0]+"\t"+myUtils.numberWithCommas(ingredients[goods][1]))
             i++;
         }
+    }
+}
+
+function showRecipes(){
+    for(var i=0; i<recipes.length; i++){
+        console.log(myUtils.zeroPadding(i+1,2)+"\t"+recipes[i].name);
+        var total=0;
+        var error="";
+        var str="";
+        for( var j=0; j<recipes[i].ingredients.length; j++){
+            var estimate = warehouse.goodsEstimatedCost(recipes[i].ingredients[j].name,recipes[i].ingredients[j].amount);
+            if(estimate===undefined)
+                error+=recipes[i].ingredients[j].name+",";
+            str+=recipes[i].ingredients[j].name+": "+recipes[i].ingredients[j].amount;
+            if(j!=recipes[i].ingredients.length-1)
+                str+=", ";
+            total+=estimate;
+        }
+        console.log("\t"+str);
+        if(error.length>0 && isNaN(total))
+            console.log("Unable to estimate cost of "+error)
+        else
+            console.log("\t"+myUtils.numberWithCommas( total));
+        
     }
 }
 
@@ -179,8 +206,4 @@ function shipment(str, command) {
     }
     else
         console.log('This command is valid just for admin!');
-}
-
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

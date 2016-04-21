@@ -10,9 +10,31 @@ var Warehouse= function (){
 
 Warehouse.prototype.addNewConsignment = function (consignment){
     this.consignments.push(consignment);
+    /// {name:[recentPrice,totalPrice]
     this.updateAvailableGoodsContent(consignment);
 };
 
+Warehouse.prototype.goodsEstimatedCost = function (goods,amount){
+    var price =0;
+    if(this.availableGoods[goods]===undefined)
+        return undefined;
+    for(var i =0; i<this.consignments.length && amount>0; i++){
+        for(var j=0; j< this.consignments[i].listOfGoods.length && amount>0; j++){
+            if( this.consignments[i].listOfGoods[j].name ===goods){
+                if(amount>this.consignments[i].listOfGoods[j].amount){
+                    price+=this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price;
+                }else{
+                    price+=amount*this.consignments[i].listOfGoods[j].price;
+                }
+                amount -=this.consignments[i].listOfGoods[j].amount;
+            }
+        }
+    }
+    if(amount>0){
+        price+=this.availableGoods[goods][0]*amount;
+    }
+    return price;
+}
 
 Warehouse.prototype.updateAvailableGoodsContent = function(consignment){
     for(var i=0; i<consignment.listOfGoods.length; i++){
