@@ -39,6 +39,9 @@ function inputHandle(command) {
     else if (str.length ===2 && order === "show" && str[1]==="recipes"){
         showRecipes();
     }
+    else if (str.length ===2 && order === "confirm" && str[1]==="menu"){
+        showRecipes();
+    }
     else if (str.length >=3 && order === "estimate"){
         estimateMeal(str[1],command.toString().substr(10+str[1].length));
     }
@@ -278,4 +281,13 @@ function createOrUpdateCurrentMenu(str, command) {
             console.log(ex);
         }
     }
+}
+
+function confirmMenu (){
+    try{
+        diningService.confirmMenu();
+    }catch (ex){
+        console.log(ex)
+    }
+    
 }

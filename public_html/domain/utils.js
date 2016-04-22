@@ -47,4 +47,8 @@ Utils.prototype.numberOfTabsForTableAlignment = function (name){
     return Math.ceil( name.length/7);
 }
 
+Utils.prototype.isJsonEmpty = function (obj){
+    return Object.keys(obj).length === 0;
+};
+
 module.exports = Utils;
