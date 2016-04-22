@@ -5,6 +5,8 @@ var Goods = require('./model/goods.js');
 var Consignment = require('./model/consignment.js');
 var RepositoryLoader = require("./model/repositoryLoader.js");
 var repositoryLoader = new RepositoryLoader();
+var DiningService = require("./model/diningService.js");
+var diningService = new DiningService();
 var Utils = require('./domain/utils.js');
 var myUtils = new Utils();
 
@@ -42,6 +44,9 @@ function inputHandle(command) {
     }
     else if (order == "shipment") {
         shipment(str,command);
+    }
+    else if (order == "menu") {
+        createOrUpdateCurrentMenu(str,command);
     }
     else
         console.log('Invalid command!');
@@ -247,4 +252,30 @@ function shipment(str, command) {
     }
     else
         console.log('This command is valid just for admin!');
+}
+
+function createOrUpdateCurrentMenu(str, command) {
+    if (str.length < 2) {
+        console.log('Empty menu is not valid.');
+        return;
+    }
+    if(str[1]==="-repeat"){
+        try{
+            diningService.repeatPreviousWeekMenu();
+        }catch (ex){
+            console.log(ex);
+        }
+    }else{
+        command = command.split("menu ").pop();
+        str = command.split(/\[|\]| |\,|\"/).filter(Boolean);
+        if (str.length % 3 != 0) {
+            console.log('Invalid arguments!');
+            return;
+        }
+        try{
+            diningService.createMenu(str);
+        }catch (ex){
+            console.log(ex);
+        }
+    }
 }
