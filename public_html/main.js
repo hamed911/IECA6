@@ -39,11 +39,24 @@ function inputHandle(command) {
     else if (str.length ===2 && order === "show" && str[1]==="recipes"){
         showRecipes();
     }
+    else if (str.length ===2 && order === "show" && str[1]==="menu"){
+        showMenu();
+    }
     else if (str.length ===2 && order === "confirm" && str[1]==="menu"){
-        showRecipes();
+        confirmMenu();
     }
     else if (str.length >=3 && order === "estimate"){
         estimateMeal(str[1],command.toString().substr(10+str[1].length));
+    }
+    else if (str.length >=2 && order === "show" && str[1] ==="reservations"){
+        showReservations(str);
+    }
+    else if (str.length >=3 && order === "reserve"){
+        try{
+            reserveMeal(str[1],command.toString().substr(9+str[1].length));
+        }catch (ex){
+            console.log(ex);
+        }
     }
     else if (order == "shipment") {
         shipment(str,command);
@@ -283,6 +296,14 @@ function createOrUpdateCurrentMenu(str, command) {
     }
 }
 
+function showMenu(){
+    try{
+        diningService.userCommandShowMenu();
+    }catch (ex){
+        console.log(ex);
+    }
+}
+
 function confirmMenu (){
     try{
         diningService.confirmMenu();
@@ -290,4 +311,70 @@ function confirmMenu (){
         console.log(ex)
     }
     
+}
+
+function reserveMeal (day,food){
+    if(session === null)
+        throw new Error("You should login first.");
+    for(var i=0; i<recipes.length; i++){
+        if(recipes[i].name === food){
+            var actualFoodCost=0;
+            for( var j=0; j<recipes[i].ingredients.length; j++){
+                if(!warehouse.getAvailableGoods(recipes[i].ingredients[j].name))
+                    throw new Error("Reservation failed. '"+recipes[i].ingredients[j].name+"' did not find in warehouse.")
+                if( warehouse.getAvailableGoods(recipes[i].ingredients[j].name)[1]<recipes[i].ingredients[j].amount)
+                    throw new Error("Due to shortage in '"+recipes[i].ingredients[j].name+"' , your reservation is failed.");    
+                var estimate= warehouse.goodsEstimatedCost(recipes[i].ingredients[j].name,recipes[i].ingredients[j].amount);
+                if(estimate===undefined)
+                    throw new Error("Reservation failed. '"+recipes[i].ingredients[j].name+"' does not exist in warehouse");
+                actualFoodCost +=estimate;
+            }
+            diningService.doReservation(day,food,actualFoodCost);
+            for( var j=0; j<recipes[i].ingredients.length; j++)
+                warehouse.addToTotalAmountOfAvailableGoods(recipes[i].ingredients[j].name,-1*recipes[i].ingredients[j].amount);
+            var user = getUser(session);
+            var reference = (new Date()).getTime();
+            user.reserve(day,reference,food);
+            console.log("reference: "+reference);
+            break;
+        }
+    }
+}
+
+function showReservations(str){
+    if(session === null)
+        console.log("You should login first.");
+    else if(session === "admin")
+        showReservationsForAdmin(str);
+    else {
+        var user = getUser(session);
+        console.log("reference\tday\tmeal");
+        for( var day in user.reservedMeal)
+            if(user.reservedMeal.hasOwnProperty(day)){
+                for(var i=0; i<user.reservedMeal[day].length; i++)
+                    console.log(user.reservedMeal[day][i].reference+"\t"+day+"\t"+user.reservedMeal[day][i].meal);
+            }
+    }
+}
+
+function showReservationsForAdmin(str){
+    var weekday = ["SAT","SUN","MON","TUE","WED"];
+    console.log("customer\t\tmeal\t\tday");
+    if(str.length ==2){
+        for(var i=0; i<usersList.length; i++){
+            for(var day in usersList[i].reservedMeal)
+                if(usersList[i].reservedMeal.hasOwnProperty(day)){
+                    for(var j=0; j<usersList[i].reservedMeal[day].meal.length; j++)
+                        console.log(usersList[i].name+"\t\t"+usersList[i].reservedMeal[day][j].meal+"\t\t"+day);
+                }
+        }
+    }else if(str.length>3 && str[2]==="-d" && (str[3] in weekday)){
+        for(var i=0; i<usersList.length; i++){
+            if(usersList[i].reservedMeal.hasOwnProperty(str[3])){
+                for(var j=0; j<usersList[i].reservedMeal[str[3]].meal.length; j++)
+                    console.log(usersList[i].name+"\t\t"+usersList[i].reservedMeal[str[3]][j].meal+"\t\t"+str[3]);
+            }
+        }
+    }else
+        console.log("Illegal argument for show reservations.")
 }

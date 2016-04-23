@@ -47,7 +47,7 @@ DiningService.prototype.showCurrentWeekMenu = function (menu){
             console.log("-");
         else
             for(var j=0; j<meals.length; j++)
-                console.log("- "+ meals[j].name +" ("+meals[j].price+")");
+                console.log("- "+ meals[j].name +" ("+myUtils.numberWithCommas( meals[j].price)+")");
     }
 };
 
@@ -59,6 +59,34 @@ DiningService.prototype.confirmMenu = function() {
     this.confirm = true;
     console.log("menu confirmed successfully.");
 };
+
+DiningService.prototype.userCommandShowMenu = function (){
+    if(myUtils.isJsonEmpty(this.currWeek))
+        throw new Error("No menu is specified for this week");
+    if(!this.confirm)
+        throw new Error("Admin have not confirmed the current week's menu yet");
+    this.showCurrentWeekMenu(this.currWeek);
+};
+
+DiningService.prototype.doReservation = function (day,food,actualCost){
+    if(myUtils.isJsonEmpty(this.currWeek))
+        throw new Error("No menu is specified for this week");
+    if(!this.confirm)
+        throw new Error("Admin have not confirmed the current week's menu yet");
+    if(this.currWeek[day] === undefined)
+        throw new Error("Reservation failed. '"+day+"' is not a weekday.");
+    var foodIsOffered = false;
+    for(var i =0; i<this.currWeek[day].length; i++){
+        if( this.currWeek[day][i].name === food){
+            this.currWeek[day][i].doReservation();
+            this.currWeek[day][i].increaseNetCost(actualCost);
+            foodIsOffered=true;
+            break;
+        }
+    }
+    if(!foodIsOffered)
+        throw new Error("Reservation failed. '"+food+"' is not offered in "+day);
+}
 
 
 module.exports = DiningService;

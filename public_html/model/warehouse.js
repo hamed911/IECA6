@@ -18,6 +18,12 @@ Warehouse.prototype.getAvailableGoods = function (goods){
     return this.availableGoods[goods];
 }
 
+Warehouse.prototype.addToTotalAmountOfAvailableGoods = function (goods,amount){
+    console.log("addToTotalAmount\t"+this.availableGoods);
+    this.availableGoods[goods][1] +=amount;
+    console.log("addToTotalAmount\t"+this.availableGoods);
+}
+
 Warehouse.prototype.goodsEstimatedCost = function (goods,amount){
     var price =0;
     if(this.availableGoods[goods]===undefined)
@@ -62,7 +68,7 @@ Warehouse.prototype.getGoodsStatus = function (){
     for(var i =0; i<this.consignments.length; i++){
         for(var j=0; j< this.consignments[i].listOfGoods.length; j++){
             if( this.consignments[i].listOfGoods[j].name in res){
-                res[this.consignments[i].listOfGoods[j].name][0] += this.consignments[i].listOfGoods[j].amount;
+                res[this.consignments[i].listOfGoods[j].name][0] += this.consignments[i].listOfGoods[j].amount*1;
                 res[this.consignments[i].listOfGoods[j].name][1] += 
                         this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price;
             }else {
@@ -86,6 +92,6 @@ Warehouse.prototype.calculateValue = function () {
     }
     return value;
     
-}
+};
 
 module.exports = Warehouse;
