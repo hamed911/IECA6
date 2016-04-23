@@ -9,14 +9,12 @@ var User = function (username,password){
 };
 
 User.prototype.reserve = function(day,reference,meal){
-    console.log("Reserve In User: "+ this.reservedMeal)
     if( this.reservedMeal[day] === undefined)
         this.reservedMeal[day] =[];
     this.reservedMeal[day].push({
         "reference" : reference,
         "meal" : meal
     });
-    console.log("Reserve In User: "+ this.reservedMeal)
 };
 
 module.exports=User;

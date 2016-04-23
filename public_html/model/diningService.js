@@ -11,7 +11,7 @@ var DiningService = function (){
 
 var weekday = ["SAT","SUN","MON","TUE","WED"];
 
-DiningService.prototype.createMenu = function (splitstr){
+DiningService.prototype.createMenu = function (splitstr,recipes){
     if(this.confirm)
         throw new Error("The current week's menu has already confirmed");
     var createdMenu={};
@@ -20,7 +20,16 @@ DiningService.prototype.createMenu = function (splitstr){
             throw new Error(splitstr[i] +" is not a weekday");
         if(createdMenu[splitstr[i]] === undefined)
             createdMenu[splitstr[i]] = [];
-        createdMenu[splitstr[i]].push( new Meal(splitstr[i + 1],splitstr[i + 2]));
+        var existRecipe=false;
+        for(var j=0; j<recipes.length; j++)
+            if(recipes[j].name === splitstr[i + 1]){
+                existRecipe=true;
+                break;
+            }
+        if(existRecipe)
+            createdMenu[splitstr[i]].push( new Meal(splitstr[i + 1],splitstr[i + 2]));
+        else
+            throw new Error("Recipe of '"+splitstr[i + 1]+"' does not exist");
     }
     this.currWeek = createdMenu;
     this.showCurrentWeekMenu(this.currWeek);
@@ -86,7 +95,7 @@ DiningService.prototype.doReservation = function (day,food,actualCost){
     }
     if(!foodIsOffered)
         throw new Error("Reservation failed. '"+food+"' is not offered in "+day);
-}
+};
 
 
 module.exports = DiningService;

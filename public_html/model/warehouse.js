@@ -19,9 +19,7 @@ Warehouse.prototype.getAvailableGoods = function (goods){
 }
 
 Warehouse.prototype.addToTotalAmountOfAvailableGoods = function (goods,amount){
-    console.log("addToTotalAmount\t"+this.availableGoods);
     this.availableGoods[goods][1] +=amount;
-    console.log("addToTotalAmount\t"+this.availableGoods);
 }
 
 Warehouse.prototype.goodsEstimatedCost = function (goods,amount){
