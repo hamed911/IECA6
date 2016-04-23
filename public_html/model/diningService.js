@@ -4,7 +4,8 @@ var Utils = require('../domain/utils.js');
 var myUtils = new Utils();
 
 var DiningService = function (){
-    this.currWeek={};
+    //{"SUN":[Meal]}
+    this.currWeek = {};
     this.lastWeek={};
     this.confirm =false;
 };

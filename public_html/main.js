@@ -64,6 +64,9 @@ function inputHandle(command) {
     else if (order == "menu") {
         createOrUpdateCurrentMenu(str,command);
     }
+    else if (str.length == 2 && order == "finalize" && str[1] == "reservations") {
+        finalizeReservations();
+    }
     else
         console.log('Invalid command!');
 }
@@ -379,4 +382,21 @@ function showReservationsForAdmin(str){
         }
     }else
         console.log("Illegal argument for show reservations.")
+}
+
+function finalizeReservations() {
+    //for (var i = 0; i < usersList.length; i++) {
+    //    if (!myUtils.isJsonEmpty(usersList[i].reservedMeal)) {
+    //        console.log(usersList[i].reservedMeal);
+    //    }
+    //}
+    console.log(diningService.currWeek);
+
+    for (var i = 0; i < diningService.currWeek; i++) {
+
+    }
+
+    diningService.confirm = false;
+    diningService.lastWeek = diningService.currWeek;
+    diningService.currWeek = {};
 }
