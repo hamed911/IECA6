@@ -13,3 +13,22 @@ logout
 login hassan sc
 login hassan 12345
 logout
+
+shipment
+login admin password
+shipment ["rice", 100, 1000], ["chicken", 50, 20000]
+
+
+menu ["SAT", "chicken-kebab", 28000], ["SAT", "chicken-wings", 29500], ["SUN", "chicken-wings", 28000]
+login admin password
+menu ["SAT", "chicken-kebab", 28000], ["SAT", "chicken-wings", 29500], ["SUN", "chicken-wings", 28000]
+reserve SAT chicken-wings
+confirm menu
+reserve SAT chicken-wings
+logout
+login hassan 12345
+reserve SUN chicken-wings
+finalize reservations
+logout
+login admin password
+finalize reservations

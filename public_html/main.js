@@ -19,8 +19,8 @@ var authenticationStatus = Object.freeze({ W_USER:-1, W_PASS: 0, LOGIN: 1, BLOCK
 
 var stdin = process.openStdin();
 
-stdin.addListener("data", function(d) { 
-    inputHandle(d.toString().trim());       
+stdin.addListener("data", function (d) {
+    inputHandle(d.toString().trim());
 });
 
 function inputHandle(command) {
@@ -33,42 +33,46 @@ function inputHandle(command) {
     else if (str.length === 1 && order === "logout") {
         logout();
     }
-    else if (str.length === 2 && order === "show" && str[1] === "ingredients"){
+    else if (str.length === 2 && order === "show" && str[1] === "ingredients" && session === "admin"){
         showIngredient();
     }
-    else if (str.length === 2 && order === "show" && str[1] === "recipes"){
+    else if (str.length === 2 && order === "show" && str[1] === "recipes" && session === "admin") {
         showRecipes();
     }
     else if (str.length ===2 && order === "show" && str[1]==="menu"){
         showMenu();
     }
-    else if (str.length ===2 && order === "confirm" && str[1]==="menu"){
+    else if (str.length === 2 && order === "confirm" && str[1] === "menu" && session === "admin") {
         confirmMenu();
     }
-    else if (str.length >=3 && order === "estimate"){
-        estimateMeal(str[1],command.toString().substr(10+str[1].length));
+    else if (str.length >= 3 && order === "estimate" && session === "admin") {
+        estimateMeal(str[1], command.split('estimate ' + str[1] + ' ').pop());
     }
     else if (str.length >=2 && order === "show" && str[1] ==="reservations"){
         showReservations(str);
     }
     else if (str.length >=3 && order === "reserve"){
         try{
-            reserveMeal(str[1],command.toString().substr(9+str[1].length));
+            reserveMeal(str[1], command.split('reserve ' + str[1] + ' ').pop());
         }catch (ex){
             console.log(ex);
         }
     }
-    else if (order == "shipment") {
+    else if (order == "shipment" && session === "admin") {
         shipment(str,command);
     }
-    else if (order == "menu") {
+    else if (order == "menu" && session === "admin") {
         createOrUpdateCurrentMenu(str,command);
     }
-    else if (str.length == 2 && order == "finalize" && str[1] == "reservations") {
+    else if (str.length == 2 && order == "finalize" && str[1] == "reservations" && session === "admin") {
         finalizeReservations();
     }
-    else
-        console.log('Invalid command!');
+    else {
+        if(session != null)
+            console.log('Invalid command!');
+        else
+            console.log('Login first!');
+    }
 }
 
 function login(str) {
@@ -116,7 +120,7 @@ function logout() {
         session = null;
     }
     else
-        console.log('First login!');
+        console.log('Login First!');
 }
 
 function authenticate(user, pass) {
@@ -394,11 +398,33 @@ function finalizeReservations() {
     //        console.log(usersList[i].reservedMeal);
     //    }
     //}
-    console.log(diningService.currWeek);
+    //console.log(diningService.currWeek);
 
-    for (var i = 0; i < diningService.currWeek; i++) {
+    var cost = 0;
+    var sold = 0;
+    var foods = {};
+    for (var day in diningService.currWeek) {
+        for (var i = 0; i < diningService.currWeek[day].length; i++) {
+            sold += (diningService.currWeek[day][i].price * diningService.currWeek[day][i].reservedAmount);
+            cost += (diningService.currWeek[day][i].netCost * 1);
 
+            if (foods[diningService.currWeek[day][i].name] == null) {
+                foods[diningService.currWeek[day][i].name] = diningService.currWeek[day][i].reservedAmount;
+            }
+            else
+                foods[diningService.currWeek[day][i].name] += diningService.currWeek[day][i].reservedAmount;
+        }
     }
+
+    var profit = sold * 1 - cost * 1;
+    var percentProfit = (profit * 100 / cost).toFixed(2);
+
+    for (var n in foods)
+        console.log(n + ': ' + foods[n]);
+
+    console.log('cost: ' + myUtils.numberWithCommas(cost));
+    console.log('sold: ' + myUtils.numberWithCommas(sold));
+    console.log('profit: ' + myUtils.numberWithCommas(profit)+' ('+percentProfit+'%)');
 
     diningService.confirm = false;
     diningService.lastWeek = diningService.currWeek;
