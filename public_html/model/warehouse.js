@@ -22,8 +22,8 @@ Warehouse.prototype.goodsEstimatedCost = function (goods,amount){
     var price =0;
     if(this.availableGoods[goods]===undefined)
         return undefined;
-    for(var i =0; i<this.consignments.length && amount>0; i++){
-        for(var j=0; j< this.consignments[i].listOfGoods.length && amount>0; j++){
+    for(var i = 0; i<this.consignments.length && amount>0; i++){
+        for(var j = 0; j< this.consignments[i].listOfGoods.length && amount > 0; j++){
             if( this.consignments[i].listOfGoods[j].name ===goods){
                 if(amount>this.consignments[i].listOfGoods[j].amount){
                     price+=this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price;
@@ -62,7 +62,7 @@ Warehouse.prototype.getGoodsStatus = function (){
     for(var i =0; i<this.consignments.length; i++){
         for(var j=0; j< this.consignments[i].listOfGoods.length; j++){
             if( this.consignments[i].listOfGoods[j].name in res){
-                res[this.consignments[i].listOfGoods[j].name][0] += this.consignments[i].listOfGoods[j].amount;
+                res[this.consignments[i].listOfGoods[j].name][0] += this.consignments[i].listOfGoods[j].amount*1;
                 res[this.consignments[i].listOfGoods[j].name][1] += 
                         this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price;
             }else {
