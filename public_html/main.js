@@ -294,7 +294,7 @@ function createOrUpdateCurrentMenu(str, command) {
             return;
         }
         try{
-            diningService.createMenu(str);
+            diningService.createMenu(str,recipes);
         }catch (ex){
             console.log(ex);
         }
@@ -321,8 +321,10 @@ function confirmMenu (){
 function reserveMeal (day,food){
     if(session === null)
         throw new Error("You should login first.");
+    var foodExist = false;
     for(var i=0; i<recipes.length; i++){
         if(recipes[i].name === food){
+            foodExist = true;
             var actualFoodCost=0;
             for( var j=0; j<recipes[i].ingredients.length; j++){
                 if(!warehouse.getAvailableGoods(recipes[i].ingredients[j].name))
@@ -344,6 +346,8 @@ function reserveMeal (day,food){
             break;
         }
     }
+    if(!foodExist)
+        console.log("Recipe of '"+food+"' does not exist");
 }
 
 function showReservations(str){
@@ -363,21 +367,21 @@ function showReservations(str){
 }
 
 function showReservationsForAdmin(str){
-    var weekday = ["SAT","SUN","MON","TUE","WED"];
+    var weekday = {"SAT":1,"SUN":2,"MON":3,"TUE":4,"WED":5};
     console.log("customer\t\tmeal\t\tday");
     if(str.length ==2){
         for(var i=0; i<usersList.length; i++){
             for(var day in usersList[i].reservedMeal)
                 if(usersList[i].reservedMeal.hasOwnProperty(day)){
-                    for(var j=0; j<usersList[i].reservedMeal[day].meal.length; j++)
-                        console.log(usersList[i].name+"\t\t"+usersList[i].reservedMeal[day][j].meal+"\t\t"+day);
+                    for(var j=0; j<usersList[i].reservedMeal[day].length; j++)
+                        console.log(usersList[i].username+"\t\t"+usersList[i].reservedMeal[day][j].meal+"\t\t"+day);
                 }
         }
     }else if(str.length>3 && str[2]==="-d" && (str[3] in weekday)){
         for(var i=0; i<usersList.length; i++){
             if(usersList[i].reservedMeal.hasOwnProperty(str[3])){
-                for(var j=0; j<usersList[i].reservedMeal[str[3]].meal.length; j++)
-                    console.log(usersList[i].name+"\t\t"+usersList[i].reservedMeal[str[3]][j].meal+"\t\t"+str[3]);
+                for(var j=0; j<usersList[i].reservedMeal[str[3]].length; j++)
+                    console.log(usersList[i].username+"\t\t"+usersList[i].reservedMeal[str[3]][j].meal+"\t\t"+str[3]);
             }
         }
     }else
