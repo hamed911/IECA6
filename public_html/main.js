@@ -33,10 +33,10 @@ function inputHandle(command) {
     else if (str.length === 1 && order === "logout") {
         logout();
     }
-    else if (str.length ===2 && order === "show" && str[1]==="ingredients"){
+    else if (str.length === 2 && order === "show" && str[1] === "ingredients"){
         showIngredient();
     }
-    else if (str.length ===2 && order === "show" && str[1]==="recipes"){
+    else if (str.length === 2 && order === "show" && str[1] === "recipes"){
         showRecipes();
     }
     else if (str.length ===2 && order === "show" && str[1]==="menu"){
@@ -234,7 +234,9 @@ function shipment(str, command) {
         }
 
         command = command.split("shipment ").pop();
-        str = command.split(/\[|\]| |\,|\"/).filter(Boolean);
+        //str = command.split(/\[|\]| |\,|\"/).filter(Boolean);
+        str = command.split(/\[|\]|\, |\"|\,/).filter(Boolean);
+        console.log(str);
         
         if (str.length % 3 != 0) {
             console.log('Invalid arguments!');
@@ -263,7 +265,7 @@ function shipment(str, command) {
         warehouse.addNewConsignment(shipment);
         var value = warehouse.calculateValue();
         //repositoryLoader.writeWarehouse(warehouse);
-        console.log('present warehouse value: ' + numberWithCommas(value));
+        console.log('present warehouse value: ' + myUtils.numberWithCommas(value));
         
     }
     else
@@ -283,7 +285,7 @@ function createOrUpdateCurrentMenu(str, command) {
         }
     }else{
         command = command.split("menu ").pop();
-        str = command.split(/\[|\]| |\,|\"/).filter(Boolean);
+        str = command.split(/\[|\]|\, |\"|\,/).filter(Boolean);
         if (str.length % 3 != 0) {
             console.log('Invalid arguments!');
             return;

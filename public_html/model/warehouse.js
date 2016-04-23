@@ -28,8 +28,8 @@ Warehouse.prototype.goodsEstimatedCost = function (goods,amount){
     var price =0;
     if(this.availableGoods[goods]===undefined)
         return undefined;
-    for(var i =0; i<this.consignments.length && amount>0; i++){
-        for(var j=0; j< this.consignments[i].listOfGoods.length && amount>0; j++){
+    for(var i = 0; i<this.consignments.length && amount>0; i++){
+        for(var j = 0; j< this.consignments[i].listOfGoods.length && amount > 0; j++){
             if( this.consignments[i].listOfGoods[j].name ===goods){
                 if(amount>this.consignments[i].listOfGoods[j].amount){
                     price+=this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price;
