@@ -5,19 +5,26 @@ var Utils = function (){
 
 Utils.prototype.sortObject = function(o) {
     var sorted = {},
-    key, a = [];
+    keys = [];
+    a = {};
 
-    for (key in o) {
+    for (var key in o) {
         if (o.hasOwnProperty(key)) {
-            a.push(key);
+            var d = key.split('-');
+            var date = new Date();
+            date.setDate(d[0]);
+            date.setMonth(d[1]);
+            date.setYear(d[2]);
+           
+            a[date.getTime()] = key;
         }
     }
+    keys = Object.keys(a).sort();
 
-    a.sort();
-
-    for (key = 0; key < a.length; key++) {
-        sorted[a[key]] = o[a[key]];
+    for (var i = 0; i < keys.length; i++) {
+        sorted[a[keys[i]]] = o[a[keys[i]]];
     }
+
     return sorted;
 };
 
