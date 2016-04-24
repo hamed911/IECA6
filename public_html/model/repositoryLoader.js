@@ -49,7 +49,7 @@ RepositoryLoader.prototype.loadWarehouse = function (){
         console.log("Error in reading \'warehouse.json\'");
         return null;
     }
-    wrhousePlain= myUtils.sortObject(wrhousePlain);
+    wrhousePlain= myUtils.sortObjectByDate(wrhousePlain);
     for (var key in wrhousePlain) {
         (function (){
             if (wrhousePlain.hasOwnProperty(key)) {

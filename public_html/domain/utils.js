@@ -3,10 +3,10 @@ var Utils = function (){
     
 };
 
-Utils.prototype.sortObject = function(o) {
-    var sorted = {},
-    keys = [];
-    a = {};
+Utils.prototype.sortObjectByDate = function(o) {
+    var sorted = {};
+    var keys = [];
+    var a = {};
 
     for (var key in o) {
         if (o.hasOwnProperty(key)) {
@@ -25,6 +25,24 @@ Utils.prototype.sortObject = function(o) {
         sorted[a[keys[i]]] = o[a[keys[i]]];
     }
 
+    return sorted;
+};
+
+Utils.prototype.sortObjectByName = function (o) {
+    var sorted = {},
+    key, a = [];
+
+    for (key in o) {
+        if (o.hasOwnProperty(key)) {
+            a.push(key);
+        }
+    }
+
+    a.sort();
+
+    for (key = 0; key < a.length; key++) {
+        sorted[a[key]] = o[a[key]];
+    }
     return sorted;
 };
 

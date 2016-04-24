@@ -62,20 +62,22 @@ Warehouse.prototype.updateAvailableGoodsContent = function(consignment){
  * @returns {undefined}
  */
 Warehouse.prototype.getGoodsStatus = function (){
-    var res={};
-    for(var i =0; i<this.consignments.length; i++){
-        for(var j=0; j< this.consignments[i].listOfGoods.length; j++){
+    var res = {};
+    for (var i = 0; i < this.consignments.length; i++){
+        for (var j = 0; j < this.consignments[i].listOfGoods.length; j++){
             if( this.consignments[i].listOfGoods[j].name in res){
-                res[this.consignments[i].listOfGoods[j].name][0] += this.consignments[i].listOfGoods[j].amount*1;
-                res[this.consignments[i].listOfGoods[j].name][1] += 
-                        this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price;
+                res[this.consignments[i].listOfGoods[j].name][0] += this.consignments[i].listOfGoods[j].amount * 1;
+                res[this.consignments[i].listOfGoods[j].name][1] +=
+                        this.consignments[i].listOfGoods[j].amount * this.consignments[i].listOfGoods[j].price;
             }else {
                 res[this.consignments[i].listOfGoods[j].name]=
                     [this.consignments[i].listOfGoods[j].amount,this.consignments[i].listOfGoods[j].amount*this.consignments[i].listOfGoods[j].price];
             }
         }
     }
-    res= myUtils.sortObject(res);
+
+    res = myUtils.sortObjectByName(res);
+
     return res;
 };
 

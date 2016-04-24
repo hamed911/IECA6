@@ -39,7 +39,7 @@ function inputHandle(command) {
     else if (str.length === 2 && order === "show" && str[1] === "recipes" && session === "admin") {
         showRecipes();
     }
-    else if (str.length ===2 && order === "show" && str[1]==="menu"){
+    else if (str.length ===2 && order === "show" && str[1]==="menu" && session != null){
         showMenu();
     }
     else if (str.length === 2 && order === "confirm" && str[1] === "menu" && session === "admin") {
@@ -48,10 +48,10 @@ function inputHandle(command) {
     else if (str.length >= 3 && order === "estimate" && session === "admin") {
         estimateMeal(str[1], command.split('estimate ' + str[1] + ' ').pop());
     }
-    else if (str.length >=2 && order === "show" && str[1] ==="reservations"){
+    else if (str.length >= 2 && order === "show" && str[1] === "reservations" && session != null) {
         showReservations(str);
     }
-    else if (str.length >=3 && order === "reserve"){
+    else if (str.length >= 3 && order === "reserve" && session != null) {
         try{
             reserveMeal(str[1], command.split('reserve ' + str[1] + ' ').pop());
         }catch (ex){
@@ -156,7 +156,7 @@ function getUser(name) {
 }
 
 function determineTabNumber(ingredients){
-    var tabnum=0;
+    var tabnum = 0;
     for(var name in ingredients)
         if(myUtils.numberOfTabsForTableAlignment(name)>tabnum)
             tabnum = myUtils.numberOfTabsForTableAlignment(name);
@@ -164,10 +164,11 @@ function determineTabNumber(ingredients){
 };
 
 function showIngredient(){
-    var ingredients= warehouse.getGoodsStatus();
-    var tabnum=determineTabNumber(ingredients);
-    var i=1;
-    for( var goods in ingredients){
+    var ingredients = warehouse.getGoodsStatus();
+    var tabnum = determineTabNumber(ingredients);
+    var i = 1;
+
+    for (var goods in ingredients) {
         if(ingredients.hasOwnProperty(goods)){
             console.log(myUtils.zeroPadding(i,2)+"\t"+goods+myUtils.spaceAlignment(goods,tabnum)+ingredients[goods][0]+"\t"+myUtils.numberWithCommas(ingredients[goods][1]))
             i++;
@@ -176,12 +177,12 @@ function showIngredient(){
 }
 
 function showRecipes(){
-    for(var i=0; i<recipes.length; i++){
+    for (var i = 0; i < recipes.length; i++){
         console.log(myUtils.zeroPadding(i+1,2)+"\t"+recipes[i].name);
         var total=0;
         var error="";
         var str="";
-        for( var j=0; j<recipes[i].ingredients.length; j++){
+        for (var j = 0; j < recipes[i].ingredients.length; j++){
             var estimate = warehouse.goodsEstimatedCost(recipes[i].ingredients[j].name,recipes[i].ingredients[j].amount);
             if(estimate===undefined)
                 error+=recipes[i].ingredients[j].name+",";
